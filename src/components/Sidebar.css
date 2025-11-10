@@ -262,4 +262,17 @@
     border-color: #3b82f6;
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
   }
+
+  /* Показываем кнопки действий всегда на мобильных */
+  .chat-actions {
+    opacity: 1 !important;
+  }
+
+  /* Делаем кнопку удаления больше для удобства нажатия */
+  .action-btn {
+    padding: 8px !important;
+    font-size: 1rem !important;
+    min-width: 36px;
+    min-height: 36px;
+  }
 }
