@@ -133,7 +133,7 @@ const MainPage: React.FC = () => {
   };
 
   return (
-    <div className={`main-page ${activeChat ? 'chat-active' : ''}`}>
+    <div className={`main-page ${activeChat ? "chat-active" : ""}`}>
       <Sidebar
         chats={allChats}
         activeChat={activeChat}

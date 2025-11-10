@@ -36,11 +36,14 @@ interface UIMessage {
 }
 
 // Функция для проверки статуса сообщения и создания ответа ИИ
-const checkMessageStatusAndCreateResponse = async (message: Message, chatId: number): Promise<UIMessage[]> => {
+const checkMessageStatusAndCreateResponse = async (
+  message: Message,
+  chatId: number
+): Promise<UIMessage[]> => {
   console.log(`🔍 [processMessages] Проверяем статус сообщения ${message.id}`);
-  
+
   const result: UIMessage[] = [];
-  
+
   // Добавляем сообщение пользователя
   const userMessage: UIMessage = {
     id: `user-${message.id}`,
@@ -53,21 +56,25 @@ const checkMessageStatusAndCreateResponse = async (message: Message, chatId: num
 
   try {
     // Проверяем статус сообщения
-    const response = await fetch(`${API_BASE_URL}/chat/${chatId}/message/${message.id}`);
-    
+    const response = await fetch(
+      `${API_BASE_URL}/chat/${chatId}/message/${message.id}`
+    );
+
     if (!response.ok) {
-      console.log(`⚠️ [processMessages] Не удалось получить статус сообщения ${message.id}`);
+      console.log(
+        `⚠️ [processMessages] Не удалось получить статус сообщения ${message.id}`
+      );
       return result;
     }
 
     const messageStatus = await response.json();
     console.log(`📊 [processMessages] Статус сообщения ${message.id}:`, {
       status: messageStatus.status,
-      hasVideo: !!messageStatus.videoUrl
+      hasVideo: !!messageStatus.videoUrl,
     });
 
     // Если сообщение завершено и есть видео, создаем ответ ИИ
-    if (messageStatus.status === 'completed' && messageStatus.videoUrl) {
+    if (messageStatus.status === "completed" && messageStatus.videoUrl) {
       const aiResponse: UIMessage = {
         id: `ai-${message.id}`,
         type: "video",
@@ -77,8 +84,10 @@ const checkMessageStatusAndCreateResponse = async (message: Message, chatId: num
         duration: 15,
       };
       result.push(aiResponse);
-      console.log(`🎥 [processMessages] Добавлен видеоответ для сообщения ${message.id}`);
-    } else if (messageStatus.status === 'processing') {
+      console.log(
+        `🎥 [processMessages] Добавлен видеоответ для сообщения ${message.id}`
+      );
+    } else if (messageStatus.status === "processing") {
       // Добавляем индикатор загрузки для сообщений в процессе
       const loadingResponse: UIMessage = {
         id: `loading-${message.id}`,
@@ -88,29 +97,43 @@ const checkMessageStatusAndCreateResponse = async (message: Message, chatId: num
         timestamp: new Date(),
       };
       result.push(loadingResponse);
-      console.log(`⏳ [processMessages] Добавлен индикатор загрузки для сообщения ${message.id}`);
+      console.log(
+        `⏳ [processMessages] Добавлен индикатор загрузки для сообщения ${message.id}`
+      );
     }
-
   } catch (error) {
-    console.error(`❌ [processMessages] Ошибка при проверке статуса сообщения ${message.id}:`, error);
+    console.error(
+      `❌ [processMessages] Ошибка при проверке статуса сообщения ${message.id}:`,
+      error
+    );
   }
 
   return result;
 };
 
 // Функция для обработки всех сообщений и создания ответов ИИ
-const processMessagesWithAIResponses = async (messages: Message[], chatId: number): Promise<UIMessage[]> => {
-  console.log(`🔄 [processMessages] Обрабатываем ${messages.length} сообщений для чата ${chatId}`);
-  
+const processMessagesWithAIResponses = async (
+  messages: Message[],
+  chatId: number
+): Promise<UIMessage[]> => {
+  console.log(
+    `🔄 [processMessages] Обрабатываем ${messages.length} сообщений для чата ${chatId}`
+  );
+
   const allUIMessages: UIMessage[] = [];
-  
+
   // Обрабатываем сообщения последовательно, чтобы сохранить порядок
   for (const message of messages) {
-    const messageWithResponses = await checkMessageStatusAndCreateResponse(message, chatId);
+    const messageWithResponses = await checkMessageStatusAndCreateResponse(
+      message,
+      chatId
+    );
     allUIMessages.push(...messageWithResponses);
   }
-  
-  console.log(`✅ [processMessages] Создано ${allUIMessages.length} UI сообщений`);
+
+  console.log(
+    `✅ [processMessages] Создано ${allUIMessages.length} UI сообщений`
+  );
   return allUIMessages;
 };
 
@@ -149,13 +172,16 @@ export const useChatMessages = (chatId: string | number | null) => {
         messagesCount: data.messages.length,
         chatName: data.name,
       });
-      
+
       setChatData(data);
-      
+
       // Проверяем статус всех сообщений и генерируем ответы ИИ
-      const messagesWithAIResponses = await processMessagesWithAIResponses(data.messages, data.id);
+      const messagesWithAIResponses = await processMessagesWithAIResponses(
+        data.messages,
+        data.id
+      );
       setMessages(messagesWithAIResponses);
-      
+
       console.log(
         "✅ [useChatMessages] Сообщения с ответами ИИ установлены:",
         messagesWithAIResponses.length
@@ -193,7 +219,10 @@ export const useChatMessages = (chatId: string | number | null) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
 
-  const updateMessage = (messageId: string, updatedData: Partial<UIMessage>) => {
+  const updateMessage = (
+    messageId: string,
+    updatedData: Partial<UIMessage>
+  ) => {
     setMessages((prevMessages) =>
       prevMessages.map((message) =>
         message.id === messageId ? { ...message, ...updatedData } : message

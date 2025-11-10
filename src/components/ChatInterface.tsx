@@ -59,8 +59,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   // Локальные сообщения интерфейса (для обратной совместимости)
   const [localMessages, setLocalMessages] = useState<UIMessage[]>([]);
 
-
-
   // Показываем модалку только если чат не настроен
   const [isSetupComplete, setIsSetupComplete] = useState(
     chat?.isSetupComplete ?? true
@@ -275,8 +273,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         <div className="chat-header">
           <div className="chat-header-info">
             {onBackToChats && (
-              <button 
-                className="back-button" 
+              <button
+                className="back-button"
                 onClick={onBackToChats}
                 aria-label="Вернуться к чатам"
               >
@@ -285,7 +283,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
             )}
             <div className="ai-avatar">
               {chatData?.imageUrl ? (
-                <img src={chatData.imageUrl} alt="AI Avatar" className="avatar-image" />
+                <img
+                  src={chatData.imageUrl}
+                  alt="AI Avatar"
+                  className="avatar-image"
+                />
               ) : (
                 "👵"
               )}
