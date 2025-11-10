@@ -136,6 +136,26 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
       )}
+
+      {/* Рекламный блок */}
+      {!isCollapsed && (
+        <div className="sidebar-promo">
+          <a
+            href="https://gardawallet.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="promo-link"
+          >
+            <div className="promo-content">
+              <img src="/garda.png" alt="Garda Wallet" className="promo-logo" />
+              <div className="promo-text">
+                <div className="promo-title">Оплачивай криптой</div>
+                <div className="promo-subtitle">покупки по QR коду</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      )}
     </div>
   );
 };
