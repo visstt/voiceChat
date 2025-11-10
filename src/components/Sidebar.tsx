@@ -68,7 +68,9 @@ const Sidebar: React.FC<SidebarProps> = ({
             className="new-chat-btn"
             onClick={() => {
               console.log('🖱️ [Sidebar] Кнопка "Новый чат" нажата');
+              console.log("📞 [Sidebar] Вызываем onNewChat функцию");
               onNewChat();
+              console.log("✅ [Sidebar] onNewChat функция вызвана");
             }}
           >
             <HiPlus className="icon" />

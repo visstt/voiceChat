@@ -7,7 +7,7 @@ export { useDeleteChat } from "./useDeleteChat";
 export { useChatMessages } from "./useChatMessages";
 export { useSendMessage, useMessageStatus } from "./useSendMessage";
 export type { ChatData } from "./useChats";
-export type { Message, ChatWithMessages } from "./useChatMessages";
+export type { Message, ChatWithMessages, UIMessage } from "./useChatMessages";
 export type { MessageStatus } from "./useSendMessage";
 
 const API_BASE_URL =

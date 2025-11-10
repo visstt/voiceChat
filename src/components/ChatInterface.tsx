@@ -1,22 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import MessageBubble from "./MessageBubble";
 import InputField from "./InputField";
 import SetupModal from "./SetupModal";
 import { useUser } from "../context/UserContext";
 import { useChatMessages, useSendMessage, useMessageStatus } from "../hooks";
+import type { UIMessage } from "../hooks";
 
 import "./ChatInterface.css";
-
-// Импортируем UIMessage из хука
-interface UIMessage {
-  id: string;
-  type: "text" | "voice" | "video" | "loading";
-  content: string;
-  sender: "user" | "ai";
-  timestamp: Date;
-  duration?: number;
-}
 
 interface ChatInterfaceProps {
   chatId?: string;
@@ -50,14 +41,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     isLoading: messagesLoading,
     error: messagesError,
     fetchChatMessages,
+    addMessage,
+    removeMessage,
   } = useChatMessages(chatId || null);
 
   // Хуки для отправки сообщений
   const { sendMessage } = useSendMessage();
   const { waitForMessageComplete } = useMessageStatus();
-
-  // Локальные сообщения интерфейса (для обратной совместимости)
-  const [localMessages, setLocalMessages] = useState<UIMessage[]>([]);
 
   // Показываем модалку только если чат не настроен
   const [isSetupComplete, setIsSetupComplete] = useState(
@@ -65,17 +55,43 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   );
   const { userPhoto, setUserPhoto, setVoiceSample } = useUser();
 
-  // Преобразуем серверные сообщения в формат интерфейса
-  const convertServerMessages = (serverMsgs: UIMessage[]): UIMessage[] => {
-    // Теперь serverMessages уже содержит UIMessage из хука, просто возвращаем их
-    return serverMsgs;
-  };
+  // Ссылка для автоскролла к концу сообщений
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Объединяем все сообщения
-  const allMessages = [
-    ...convertServerMessages(serverMessages),
-    ...localMessages,
-  ];
+  // Используем сообщения из хука (уже включают и серверные, и локальные)
+  const allMessages = serverMessages;
+
+  // Автоскролл к концу сообщений при их изменении
+  useEffect(() => {
+    // Небольшая задержка для того чтобы DOM успел обновиться
+    const scrollToBottom = () => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+          inline: "nearest",
+        });
+      }
+    };
+
+    // Альтернативный способ - скролл через контейнер
+    const scrollContainer = () => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop =
+          messagesContainerRef.current.scrollHeight;
+      }
+    };
+
+    // Используем setTimeout для гарантированного выполнения после рендера
+    const timeoutId = setTimeout(() => {
+      console.log("📜 [Автоскролл] Попытка скролла к концу чата");
+      scrollToBottom();
+      scrollContainer();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [allMessages]);
 
   // Отладка: выводим текущее значение userPhoto
   console.log("ChatInterface - Current userPhoto:", userPhoto);
@@ -109,25 +125,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       setVoiceSample(voice);
       setIsSetupComplete(true);
 
-      // Добавляем приветственное сообщение от AI после настройки
-      const welcomeMessage: UIMessage = {
-        id: "welcome",
-        type: "text",
-        content: "Привет! Теперь мы можем общаться. Как твои дела?",
-        sender: "ai",
-        timestamp: new Date(),
-      };
-
-      // Добавляем тестовое сообщение от пользователя для проверки аватара
-      const testUserMessage: UIMessage = {
-        id: "test-user",
-        type: "text",
-        content: "Тестовое сообщение пользователя",
-        sender: "user",
-        timestamp: new Date(),
-      };
-
-      setLocalMessages([welcomeMessage, testUserMessage]);
+      // Моковые сообщения убраны
     } catch (error) {
       console.error("Ошибка при настройке чата:", error);
     }
@@ -160,7 +158,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       duration: type === "voice" ? 2 : undefined,
     };
 
-    setLocalMessages((prev) => [...prev, userMessage]);
+    addMessage(userMessage);
+
+    // Принудительно скроллим после добавления сообщения пользователя
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
 
     try {
       console.log("📤 [handleSendMessage] Отправляем сообщение на сервер...");
@@ -184,7 +187,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         timestamp: new Date(),
       };
 
-      setLocalMessages((prev) => [...prev, loadingMessage]);
+      addMessage(loadingMessage);
 
       console.log(
         "⏳ [handleSendMessage] Начинаем отслеживание статуса сообщения..."
@@ -204,9 +207,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
       console.log("🔚 [handleSendMessage] Удаляем индикатор загрузки");
       // Удаляем индикатор загрузки
-      setLocalMessages((prev) =>
-        prev.filter((msg) => msg.id !== `loading-${sentMessage.id}`)
-      );
+      removeMessage(`loading-${sentMessage.id}`);
 
       if (
         completedMessage &&
@@ -227,7 +228,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           duration: 15, // Примерная длительность
         };
 
-        setLocalMessages((prev) => [...prev, videoResponse]);
+        addMessage(videoResponse);
         console.log("✅ [handleSendMessage] Видеоответ добавлен в сообщения");
       } else {
         console.log(
@@ -248,7 +249,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       );
 
       // Удаляем индикатор загрузки в случае ошибки
-      setLocalMessages((prev) => prev.filter((msg) => msg.type !== "loading"));
+      // Удаляем все loading сообщения через фильтрацию всех сообщений
+      // TODO: Реализовать removeAllMessagesByType в хуке
 
       // Показываем ошибку пользователю
       const errorMessage: UIMessage = {
@@ -259,7 +261,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         timestamp: new Date(),
       };
 
-      setLocalMessages((prev) => [...prev, errorMessage]);
+      addMessage(errorMessage);
     }
   };
 
@@ -300,7 +302,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         </div>
 
         {/* Область сообщений */}
-        <div className="messages-container">
+        <div className="messages-container" ref={messagesContainerRef}>
           {messagesLoading ? (
             <div className="empty-messages">
               <p>Загрузка сообщений...</p>
@@ -324,6 +326,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
               />
             ))
           )}
+          {/* Элемент для автоскролла */}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Поле ввода */}

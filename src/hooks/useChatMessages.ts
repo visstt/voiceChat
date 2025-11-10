@@ -26,9 +26,9 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 // Интерфейс для сообщения UI
-interface UIMessage {
+export interface UIMessage {
   id: string;
-  type: "text" | "video" | "loading";
+  type: "text" | "voice" | "video" | "loading";
   content: string;
   sender: "user" | "ai";
   timestamp: Date;
