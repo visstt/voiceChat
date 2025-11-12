@@ -24,6 +24,8 @@
   animation: modalAppear 0.3s ease-out;
   color: #1f2937;
   border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes modalAppear {
@@ -125,6 +127,8 @@
   flex-direction: column;
   justify-content: center;
   background: white;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .step-content {
@@ -405,6 +409,16 @@
   background: linear-gradient(145deg, #1d4ed8, #1e40af);
 }
 
+.play-btn.playing {
+  background: linear-gradient(145deg, #ef4444, #dc2626);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.play-btn.playing:hover {
+  background: linear-gradient(145deg, #dc2626, #b91c1c);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
 /* Аудио результат и waveform */
 .audio-result {
   padding: 12px;
@@ -680,15 +694,19 @@
   .setup-modal {
     width: 95%;
     margin: 16px;
+    max-height: 95vh;
   }
 
   .modal-header {
-    padding: 20px 16px 12px;
+    padding: 16px 16px 12px;
+    flex-shrink: 0;
   }
 
   .modal-content {
-    padding: 20px 12px;
-    min-height: 250px;
+    padding: 16px 12px;
+    min-height: auto;
+    overflow-y: auto;
+    flex: 1;
   }
 
   .upload-placeholder,
@@ -714,6 +732,72 @@
   }
 
   .step span {
+    font-size: 10px;
+  }
+}
+
+/* Дополнительные стили для очень маленьких экранов */
+@media (max-height: 600px) {
+  .setup-modal {
+    max-height: 98vh;
+    margin: 8px;
+  }
+
+  .modal-header {
+    padding: 12px 16px 8px;
+  }
+
+  .modal-header h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .modal-content {
+    padding: 12px;
+    min-height: auto;
+  }
+
+  .upload-placeholder,
+  .photo-preview img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .record-button {
+    width: 80px;
+    height: 80px;
+    font-size: 11px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  .form-group label {
+    margin-bottom: 6px;
+  }
+}
+
+/* Для горизонтальной ориентации на мобильных */
+@media (max-height: 500px) and (orientation: landscape) {
+  .setup-modal {
+    max-height: 95vh;
+    width: 98%;
+  }
+
+  .modal-content {
+    padding: 8px 12px;
+  }
+
+  .upload-placeholder,
+  .photo-preview img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .record-button {
+    width: 70px;
+    height: 70px;
     font-size: 10px;
   }
 }

@@ -6,6 +6,7 @@ import {
   FaMicrophone,
   FaStop,
   FaPlay,
+  FaPause,
   FaCheck,
   FaCheckCircle,
   FaFolder,
@@ -31,6 +32,7 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioURL, setAudioURL] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [chatName, setChatName] = useState<string>("");
   const [chatDescription, setChatDescription] = useState<string>("");
 
@@ -105,6 +107,9 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
     const file = event.target.files?.[0];
     if (file) {
       setVoiceSample(file);
+      // Создаем URL для прослушивания загруженного файла
+      const url = URL.createObjectURL(file);
+      setAudioURL(url);
     }
   };
 
@@ -144,9 +149,20 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
     }
   };
 
-  const playRecording = () => {
+  const togglePlayback = () => {
     if (wavesurferRef.current) {
-      wavesurferRef.current.play();
+      if (isPlaying) {
+        wavesurferRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        wavesurferRef.current.play();
+        setIsPlaying(true);
+
+        // Останавливаем воспроизведение по окончании
+        wavesurferRef.current.on("finish", () => {
+          setIsPlaying(false);
+        });
+      }
     }
   };
 
@@ -309,7 +325,6 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
           {currentStep === 3 && (
             <div className="step-content">
               <h3>Запишите образец голоса</h3>
-              <p>Произнесите любую фразу - это поможет ИИ лучше понимать вас</p>
 
               <div className="voice-setup-area">
                 {!voiceSample ? (
@@ -399,8 +414,19 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
                     {audioURL && (
                       <div className="audio-result">
                         <div className="playback-controls">
-                          <button className="play-btn" onClick={playRecording}>
-                            <FaPlay /> Прослушать
+                          <button
+                            className={`play-btn ${isPlaying ? "playing" : ""}`}
+                            onClick={togglePlayback}
+                          >
+                            {isPlaying ? (
+                              <>
+                                <FaPause /> Пауза
+                              </>
+                            ) : (
+                              <>
+                                <FaPlay /> Прослушать
+                              </>
+                            )}
                           </button>
                         </div>
 
@@ -416,6 +442,10 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
                       onClick={() => {
                         setVoiceSample(null);
                         setAudioURL(null);
+                        setIsPlaying(false);
+                        if (wavesurferRef.current) {
+                          wavesurferRef.current.stop();
+                        }
                       }}
                     >
                       Записать заново
