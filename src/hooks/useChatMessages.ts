@@ -205,7 +205,19 @@ export const useChatMessages = (chatId: string | number | null) => {
         "🔄 [useChatMessages] useEffect: загружаем сообщения для chatId:",
         chatId
       );
-      fetchChatMessages(chatId);
+      
+      // Проверяем, является ли chatId локальным чатом (timestamp) или серверным
+      const isLocalChat = typeof chatId === 'string' && chatId.length > 10;
+      
+      if (isLocalChat) {
+        console.log("📱 [useChatMessages] Локальный чат, пропускаем загрузку с сервера");
+        setChatData(null);
+        setMessages([]);
+        setIsLoading(false);
+        setError(null);
+      } else {
+        fetchChatMessages(chatId);
+      }
     } else {
       console.log(
         "⚠️ [useChatMessages] useEffect: chatId отсутствует, очищаем данные"

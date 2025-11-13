@@ -51,7 +51,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   // Показываем модалку только если чат не настроен
   const [isSetupComplete, setIsSetupComplete] = useState(
-    chat?.isSetupComplete ?? true
+    chat?.isSetupComplete ?? false
   );
   const { userPhoto, setUserPhoto, setVoiceSample } = useUser();
 
@@ -92,6 +92,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
     return () => clearTimeout(timeoutId);
   }, [allMessages]);
+
+  // Обновляем состояние настройки при смене чата
+  useEffect(() => {
+    setIsSetupComplete(chat?.isSetupComplete ?? false);
+  }, [chat]);
 
   // Отладка: выводим текущее значение userPhoto
   console.log("ChatInterface - Current userPhoto:", userPhoto);
@@ -321,7 +326,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
               <MessageBubble
                 key={message.id}
                 message={message}
-                userPhoto={userPhoto}
                 aiPhoto={chatData?.imageUrl}
               />
             ))

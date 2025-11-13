@@ -12,13 +12,11 @@ interface Message {
 
 interface MessageBubbleProps {
   message: Message;
-  userPhoto?: string | null;
   aiPhoto?: string | null;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
-  userPhoto,
   aiPhoto,
 }) => {
   // Отладка для проверки получения данных
@@ -29,7 +27,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     content:
       message.content.substring(0, 100) +
       (message.content.length > 100 ? "..." : ""),
-    hasUserPhoto: !!userPhoto,
+    hasAiPhoto: !!aiPhoto,
   });
 
   const formatTime = (date: Date) => {
@@ -139,11 +137,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
         {message.sender === "user" && (
           <div className="avatar">
-            {userPhoto ? (
-              <img src={userPhoto} alt="User Avatar" className="avatar-image" />
-            ) : (
-              <span className="avatar-emoji">🙋‍♂️</span>
-            )}
+            <div className="user-avatar-circle">
+              <span>�</span>
+            </div>
           </div>
         )}
       </div>
