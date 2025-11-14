@@ -319,7 +319,7 @@
     flex-shrink: 0;
     min-height: 50px;
   }
-
+  
   .mic-button,
   .send-button,
   .attach-button {
@@ -327,10 +327,29 @@
     height: 30px;
     font-size: 12px;
   }
-
+  
   .text-input {
     padding: 6px 10px;
     font-size: 13px;
     min-height: 16px;
+  }
+}
+
+/* Учет навигационной панели браузера на мобильных */
+@media (max-width: 768px) {
+  .input-field {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+  }
+}
+
+/* Для iOS Safari и других мобильных браузеров с динамической высотой */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  @media (max-width: 768px) {
+    .input-field {
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
   }
 }

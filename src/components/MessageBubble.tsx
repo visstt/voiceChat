@@ -1,4 +1,5 @@
 import React from "react";
+import { HiUser } from "react-icons/hi2";
 import "./MessageBubble.css";
 
 interface Message {
@@ -135,7 +136,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, aiPhoto }) => {
         {message.sender === "user" && (
           <div className="avatar">
             <div className="user-avatar-circle">
-              <span>�</span>
+              <HiUser />
             </div>
           </div>
         )}
