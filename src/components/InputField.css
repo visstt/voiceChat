@@ -279,7 +279,7 @@
     flex-shrink: 0;
     min-height: 56px; /* Минимальная высота для доступности */
   }
-  
+
   .mic-button,
   .send-button,
   .attach-button {
@@ -287,7 +287,7 @@
     height: 32px;
     font-size: 12px;
   }
-  
+
   .text-input {
     padding: 6px 12px;
     font-size: 14px;
@@ -301,11 +301,11 @@
     padding: 8px;
     flex-shrink: 0;
   }
-  
+
   .input-container {
     gap: 4px;
   }
-  
+
   .text-input {
     padding: 8px 12px;
     font-size: 14px;
@@ -319,7 +319,7 @@
     flex-shrink: 0;
     min-height: 50px;
   }
-  
+
   .mic-button,
   .send-button,
   .attach-button {
@@ -327,7 +327,7 @@
     height: 30px;
     font-size: 12px;
   }
-  
+
   .text-input {
     padding: 6px 10px;
     font-size: 13px;

@@ -174,11 +174,11 @@
     height: 100vh;
     min-height: 100vh;
   }
-  
+
   .chat-header {
     padding: 8px 12px;
   }
-  
+
   .messages-container {
     padding: 8px;
     flex: 1;
@@ -192,11 +192,11 @@
     height: 100vh;
     min-height: 100vh;
   }
-  
+
   .messages-container {
     padding: 8px;
   }
-  
+
   .chat-header {
     padding: 8px 10px;
   }
@@ -208,11 +208,11 @@
     height: 100vh;
     min-height: 100vh;
   }
-  
+
   .chat-header {
     padding: 6px 12px;
   }
-  
+
   .messages-container {
     padding: 6px;
     flex: 1;
