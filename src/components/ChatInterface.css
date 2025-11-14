@@ -147,19 +147,75 @@
 @media (max-width: 768px) {
   .chat-interface {
     height: 100vh;
+    min-height: 100vh;
   }
 
   .messages-container {
     padding: 12px;
+    flex: 1;
+    min-height: 0; /* Важно для правильного flex поведения */
   }
 
   .chat-header {
     padding: 10px 12px;
+    flex-shrink: 0;
   }
 
   .ai-avatar {
     width: 36px;
     height: 36px;
     font-size: 18px;
+  }
+}
+
+/* Для очень маленьких экранов */
+@media (max-height: 600px) {
+  .chat-interface {
+    height: 100vh;
+    min-height: 100vh;
+  }
+  
+  .chat-header {
+    padding: 8px 12px;
+  }
+  
+  .messages-container {
+    padding: 8px;
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+/* Для очень узких экранов */
+@media (max-width: 480px) {
+  .chat-interface {
+    height: 100vh;
+    min-height: 100vh;
+  }
+  
+  .messages-container {
+    padding: 8px;
+  }
+  
+  .chat-header {
+    padding: 8px 10px;
+  }
+}
+
+/* Для горизонтальной ориентации на мобильных */
+@media (max-height: 500px) and (orientation: landscape) {
+  .chat-interface {
+    height: 100vh;
+    min-height: 100vh;
+  }
+  
+  .chat-header {
+    padding: 6px 12px;
+  }
+  
+  .messages-container {
+    padding: 6px;
+    flex: 1;
+    min-height: 0;
   }
 }

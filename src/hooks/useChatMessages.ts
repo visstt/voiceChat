@@ -205,12 +205,14 @@ export const useChatMessages = (chatId: string | number | null) => {
         "🔄 [useChatMessages] useEffect: загружаем сообщения для chatId:",
         chatId
       );
-      
+
       // Проверяем, является ли chatId локальным чатом (timestamp) или серверным
-      const isLocalChat = typeof chatId === 'string' && chatId.length > 10;
-      
+      const isLocalChat = typeof chatId === "string" && chatId.length > 10;
+
       if (isLocalChat) {
-        console.log("📱 [useChatMessages] Локальный чат, пропускаем загрузку с сервера");
+        console.log(
+          "📱 [useChatMessages] Локальный чат, пропускаем загрузку с сервера"
+        );
         setChatData(null);
         setMessages([]);
         setIsLoading(false);

@@ -4,6 +4,10 @@
   border-top: 1px solid #e0e0e0;
   padding: 12px 16px;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Поле ввода никогда не сжимается */
+  min-height: 60px; /* Минимальная высота для доступности */
+  position: relative;
+  z-index: 10; /* Поверх других элементов */
 }
 
 .input-container {
@@ -235,6 +239,9 @@
 @media (max-width: 768px) {
   .input-field {
     padding: 10px 12px;
+    flex-shrink: 0; /* Поле ввода не должно сжиматься */
+    position: relative;
+    z-index: 1;
   }
 
   .input-container {
@@ -247,11 +254,13 @@
     width: 36px;
     height: 36px;
     font-size: 14px;
+    flex-shrink: 0;
   }
 
   .text-input {
     padding: 8px 14px;
     font-size: 14px;
+    min-height: 20px;
   }
 
   .recording-indicator {
@@ -260,5 +269,68 @@
 
   .recording-text {
     font-size: 13px;
+  }
+}
+
+/* Для очень маленьких экранов */
+@media (max-height: 600px) {
+  .input-field {
+    padding: 8px 10px;
+    flex-shrink: 0;
+    min-height: 56px; /* Минимальная высота для доступности */
+  }
+  
+  .mic-button,
+  .send-button,
+  .attach-button {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .text-input {
+    padding: 6px 12px;
+    font-size: 14px;
+    min-height: 18px;
+  }
+}
+
+/* Для очень узких экранов */
+@media (max-width: 480px) {
+  .input-field {
+    padding: 8px;
+    flex-shrink: 0;
+  }
+  
+  .input-container {
+    gap: 4px;
+  }
+  
+  .text-input {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Для горизонтальной ориентации на мобильных */
+@media (max-height: 500px) and (orientation: landscape) {
+  .input-field {
+    padding: 6px 10px;
+    flex-shrink: 0;
+    min-height: 50px;
+  }
+  
+  .mic-button,
+  .send-button,
+  .attach-button {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+  
+  .text-input {
+    padding: 6px 10px;
+    font-size: 13px;
+    min-height: 16px;
   }
 }

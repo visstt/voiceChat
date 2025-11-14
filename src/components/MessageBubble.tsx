@@ -15,10 +15,7 @@ interface MessageBubbleProps {
   aiPhoto?: string | null;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({
-  message,
-  aiPhoto,
-}) => {
+const MessageBubble: React.FC<MessageBubbleProps> = ({ message, aiPhoto }) => {
   // Отладка для проверки получения данных
   console.log("🧩 [MessageBubble] Рендерим сообщение:", {
     id: message.id,
