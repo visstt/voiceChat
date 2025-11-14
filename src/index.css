@@ -61,3 +61,36 @@ input {
 ::-webkit-scrollbar-thumb:hover {
   background: #a0a0a0;
 }
+
+/* Критически важные стили для мобильных устройств */
+@media (max-width: 768px), (pointer: coarse) {
+  html {
+    height: 100%;
+    height: 100dvh;
+  }
+
+  body {
+    height: 100%;
+    height: 100dvh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  #root {
+    height: 100%;
+    height: 100dvh;
+    position: relative;
+  }
+
+  /* Принудительное отображение элементов ввода на мобильных */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    zoom: 1;
+  }
+}
