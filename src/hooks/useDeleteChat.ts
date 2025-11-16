@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export const useDeleteChat = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,9 +13,9 @@ export const useDeleteChat = () => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/chat/${chatId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -24,9 +25,12 @@ export const useDeleteChat = () => {
 
       return true;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при удалении чата';
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Произошла ошибка при удалении чата";
       setError(errorMessage);
-      console.error('Error deleting chat:', err);
+      console.error("Error deleting chat:", err);
       return false;
     } finally {
       setIsLoading(false);

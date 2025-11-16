@@ -1,5 +1,12 @@
 import React from "react";
-import { HiPlus, HiChevronLeft, HiChevronRight, HiTrash } from "react-icons/hi";
+import {
+  HiPlus,
+  HiChevronLeft,
+  HiChevronRight,
+  HiTrash,
+  HiLogout,
+} from "react-icons/hi";
+import { useLogout } from "../hooks";
 import "./Sidebar.css";
 
 interface Chat {
@@ -21,6 +28,7 @@ interface SidebarProps {
   isLoading?: boolean;
   error?: string | null;
   isDeleting?: boolean;
+  onLogout?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -34,7 +42,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   isLoading = false,
   error = null,
   isDeleting = false,
+  onLogout,
 }) => {
+  const { logout, loading: logoutLoading } = useLogout();
   const formatTime = (date: Date) => {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
@@ -156,6 +166,22 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </div>
           </a>
+
+          {onLogout && (
+            <button
+              className="logout-btn"
+              onClick={async () => {
+                const success = await logout();
+                if (success && onLogout) {
+                  onLogout();
+                }
+              }}
+              disabled={logoutLoading}
+            >
+              <HiLogout className="icon" />
+              {logoutLoading ? "Выход..." : "Выйти"}
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -14,7 +14,11 @@ interface Chat {
   isSetupComplete?: boolean;
 }
 
-const MainPage: React.FC = () => {
+interface MainPageProps {
+  onLogout?: () => void;
+}
+
+const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
   const { createChat } = useCreateChat();
   const {
     chats: serverChats,
@@ -145,6 +149,7 @@ const MainPage: React.FC = () => {
         isLoading={isLoading}
         error={error}
         isDeleting={isDeleting}
+        onLogout={onLogout}
       />
 
       <div

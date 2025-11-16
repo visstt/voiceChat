@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import apiClient from "../api/apiClient";
 
 export interface ChatData {
   id: number;
@@ -12,9 +13,6 @@ export interface ChatData {
   updatedAt: string;
 }
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-
 export const useChats = () => {
   const [chats, setChats] = useState<ChatData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,19 +23,8 @@ export const useChats = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/chat`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data: ChatData[] = await response.json();
-      setChats(data);
+      const response = await apiClient.get<ChatData[]>("/chat");
+      setChats(response.data);
     } catch (err) {
       const errorMessage =
         err instanceof Error
