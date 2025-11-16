@@ -689,6 +689,15 @@
   box-shadow: none;
 }
 
+.complete-btn:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .setup-modal {
@@ -800,4 +809,19 @@
     height: 70px;
     font-size: 10px;
   }
+}
+
+/* Анимация спиннера */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
 }

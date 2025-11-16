@@ -11,6 +11,7 @@ import {
   FaCheckCircle,
   FaFolder,
   FaTimes,
+  FaSpinner,
 } from "react-icons/fa";
 import "./SetupModal.css";
 
@@ -35,6 +36,7 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [chatName, setChatName] = useState<string>("");
   const [chatDescription, setChatDescription] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const waveformRef = useRef<HTMLDivElement>(null);
@@ -184,8 +186,15 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
     }
   };
 
-  const handleComplete = () => {
-    onComplete(userPhoto, voiceSample, chatName, chatDescription);
+  const handleComplete = async () => {
+    setIsSubmitting(true);
+    try {
+      await onComplete(userPhoto, voiceSample, chatName, chatDescription);
+    } catch (error) {
+      console.error("Ошибка при завершении настройки:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isStepComplete = () => {
@@ -514,8 +523,18 @@ const SetupModal: React.FC<SetupModalProps> = ({ isOpen, onComplete }) => {
               Далее
             </button>
           ) : (
-            <button className="complete-btn" onClick={handleComplete}>
-              Начать общение
+            <button
+              className="complete-btn"
+              onClick={handleComplete}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <FaSpinner className="spinner-icon" /> Загрузка...
+                </>
+              ) : (
+                "Начать общение"
+              )}
             </button>
           )}
         </div>
