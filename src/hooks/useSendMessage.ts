@@ -46,7 +46,10 @@ export const useSendMessage = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Пытаемся получить сообщение об ошибке от сервера
+        const errorData = await response.json().catch(() => null);
+        const serverMessage = errorData?.message || `HTTP error! status: ${response.status}`;
+        throw new Error(serverMessage);
       }
 
       const message: MessageStatus = await response.json();

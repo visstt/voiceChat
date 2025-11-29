@@ -136,12 +136,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   };
 
+  const [errorNotification, setErrorNotification] = useState<string | null>(null);
+
   const handleSendMessage = async (content: string, type: "text" | "voice") => {
     console.log("💬 [handleSendMessage] Начало отправки сообщения:", {
       chatId,
       type,
       content,
     });
+
+    // Очищаем предыдущие уведомления об ошибках
+    setErrorNotification(null);
 
     if (!chatId || !chatData) {
       console.error(
@@ -253,20 +258,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         error
       );
 
-      // Удаляем индикатор загрузки в случае ошибки
-      // Удаляем все loading сообщения через фильтрацию всех сообщений
-      // TODO: Реализовать removeAllMessagesByType в хуке
+      // Получаем текст ошибки
+      const errorText = error instanceof Error 
+        ? error.message 
+        : "Произошла ошибка при отправке сообщения";
 
-      // Показываем ошибку пользователю
-      const errorMessage: UIMessage = {
-        id: `error-${Date.now()}`,
-        type: "text",
-        content: "Произошла ошибка при отправке сообщения",
-        sender: "ai",
-        timestamp: new Date(),
-      };
+      // Показываем уведомление об ошибке в UI
+      setErrorNotification(errorText);
 
-      addMessage(errorMessage);
+      // Автоматически скрываем уведомление через 5 секунд
+      setTimeout(() => {
+        setErrorNotification(null);
+      }, 5000);
     }
   };
 
@@ -276,6 +279,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <SetupModal isOpen={!isSetupComplete} onComplete={handleSetupComplete} />
 
       <div className="chat-interface">
+        {/* Уведомление об ошибке */}
+        {errorNotification && (
+          <div className="error-notification">
+            {errorNotification}
+          </div>
+        )}
+
         {/* Заголовок чата */}
         <div className="chat-header">
           <div className="chat-header-info">
