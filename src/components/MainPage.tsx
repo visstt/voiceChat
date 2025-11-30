@@ -115,8 +115,16 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
             console.log("📊 Статус чата обновлен:", status);
             if (status.status === "completed") {
               setProcessingChatId(null);
+              // Обновляем чат: снимаем isProcessing, ставим isSetupComplete
+              updateChat(status.id, {
+                status: status.status,
+                voiceId: status.voiceId,
+              });
             } else if (status.status === "error") {
               setProcessingChatId(null);
+              updateChat(status.id, {
+                status: status.status,
+              });
               console.error("❌ Ошибка при обработке чата");
             }
           });
