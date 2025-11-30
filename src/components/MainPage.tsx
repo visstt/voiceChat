@@ -32,6 +32,7 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
     error,
     addChat,
     removeChat,
+    updateChat,
   } = useChats();
   const { deleteChat, isLoading: isDeleting } = useDeleteChat();
 
