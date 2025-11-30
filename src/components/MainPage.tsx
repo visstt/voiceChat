@@ -25,30 +25,6 @@ interface MainPageProps {
 }
 
 const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
-  // Запускать поллинг при открытии чата, если статус processing
-  React.useEffect(() => {
-    if (!activeChat) return;
-    const chat = allChats.find((c) => c.id === activeChat);
-    // Проверяем, что это серверный чат и статус processing
-    if (chat && chat.isProcessing) {
-      startPolling((status) => {
-        console.log("📊 Статус чата обновлен:", status);
-        if (status.status === "completed") {
-          setProcessingChatId(null);
-          updateChat(status.id, {
-            status: status.status,
-            voiceId: status.voiceId,
-          });
-        } else if (status.status === "error") {
-          setProcessingChatId(null);
-          updateChat(status.id, {
-            status: status.status,
-          });
-          console.error("❌ Ошибка при обработке чата");
-        }
-      });
-    }
-  }, [activeChat, allChats, startPolling, updateChat]);
   const { createChat } = useCreateChat();
   const {
     chats: serverChats,
@@ -82,30 +58,18 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const handleBackToChats = () => {
-    console.log("⬅️ [MainPage] Возврат к списку чатов");
     setActiveChat(null);
   };
 
   const handleNewChat = () => {
-    console.log("➕ [MainPage] Создание нового чата...");
-    console.log("📋 [MainPage] Текущие локальные чаты:", localChats);
-
     const newChat: Chat = {
       id: Date.now().toString(),
       title: "Новый чат",
       timestamp: new Date(),
-      isSetupComplete: false, // Новый чат требует настройки
+      isSetupComplete: false,
     };
-
-    console.log("🆕 [MainPage] Новый чат создан:", newChat);
-
     setLocalChats([newChat, ...localChats]);
     setActiveChat(newChat.id);
-
-    console.log(
-      "✅ [MainPage] Чат добавлен, активный чат установлен на:",
-      newChat.id
-    );
   };
 
   const handleChatSetupComplete = async (
@@ -124,23 +88,16 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
       });
 
       if (chatData) {
-        // Удаляем локальный чат и добавляем в серверные чаты
         setLocalChats((prevChats) =>
           prevChats.filter((chat) => chat.id !== chatId)
         );
         addChat(chatData);
-
-        // Обновляем активный чат на новый ID
         setActiveChat(chatData.id.toString());
-
-        // Если статус processing, запускаем поллинг
         if (chatData.status === "processing") {
           setProcessingChatId(chatData.id);
           startPolling((status) => {
-            console.log("📊 Статус чата обновлен:", status);
             if (status.status === "completed") {
               setProcessingChatId(null);
-              // Обновляем чат: снимаем isProcessing, ставим isSetupComplete
               updateChat(status.id, {
                 status: status.status,
                 voiceId: status.voiceId,
@@ -150,14 +107,12 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
               updateChat(status.id, {
                 status: status.status,
               });
-              console.error("❌ Ошибка при обработке чата");
             }
           });
         }
       }
     } catch (error) {
-      console.error("Ошибка при создании чата:", error);
-      // В случае ошибки можно показать уведомление пользователю
+      // Можно показать уведомление пользователю
     }
   };
 
@@ -166,23 +121,17 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
   };
 
   const handleDeleteChat = async (chatId: string) => {
-    // Проверяем, это локальный чат или серверный
     const isLocalChat = localChats.some((chat) => chat.id === chatId);
-
     if (isLocalChat) {
       setLocalChats(localChats.filter((chat) => chat.id !== chatId));
     } else {
-      // Удаляем чат с сервера
       const success = await deleteChat(parseInt(chatId));
       if (success) {
         removeChat(parseInt(chatId));
       } else {
-        // Можно показать уведомление об ошибке
-        console.error("Не удалось удалить чат");
         return;
       }
     }
-
     if (activeChat === chatId) {
       setActiveChat(null);
     }
@@ -191,6 +140,27 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
   };
+
+  React.useEffect(() => {
+    if (!activeChat) return;
+    const chat = allChats.find((c) => c.id === activeChat);
+    if (chat && chat.isProcessing) {
+      startPolling((status) => {
+        if (status.status === "completed") {
+          setProcessingChatId(null);
+          updateChat(status.id, {
+            status: status.status,
+            voiceId: status.voiceId,
+          });
+        } else if (status.status === "error") {
+          setProcessingChatId(null);
+          updateChat(status.id, {
+            status: status.status,
+          });
+        }
+      });
+    }
+  }, [activeChat, allChats, startPolling, updateChat]);
 
   return (
     <div className={`main-page ${activeChat ? "chat-active" : ""}`}>
@@ -207,7 +177,6 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
         isDeleting={isDeleting}
         onLogout={onLogout}
       />
-
       <div
         className={`main-content ${
           isSidebarCollapsed ? "sidebar-collapsed" : ""
