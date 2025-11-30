@@ -125,7 +125,7 @@
   min-height: 400px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   background: white;
   flex: 1;
   overflow-y: auto;
@@ -151,8 +151,10 @@
 
 /* Форма настройки чата */
 .chat-info-form {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   text-align: left;
+  width: 100%;
+  max-width: 100%;
 }
 
 .form-group {
@@ -189,6 +191,7 @@
 .form-textarea {
   resize: vertical;
   min-height: 80px;
+  max-height: 120px;
   font-family: inherit;
 }
 
@@ -718,6 +721,29 @@
     flex: 1;
   }
 
+  .chat-info-form {
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-textarea {
+    min-height: 60px;
+    max-height: 100px;
+  }
+
+  .step-content h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
   .upload-placeholder,
   .photo-preview img {
     width: 160px;
@@ -757,13 +783,52 @@
   }
 
   .modal-header h2 {
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 8px;
   }
 
   .modal-content {
     padding: 12px;
     min-height: auto;
+    justify-content: flex-start;
+  }
+
+  .step-content {
+    padding: 0;
+  }
+
+  .step-content h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .step-content p {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .chat-info-form {
+    margin-bottom: 12px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  .form-group label {
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .form-textarea {
+    min-height: 50px;
+    max-height: 70px;
   }
 
   .upload-placeholder,
@@ -778,12 +843,15 @@
     font-size: 11px;
   }
 
-  .form-group {
-    margin-bottom: 12px;
+  .modal-footer {
+    padding: 16px 24px;
   }
 
-  .form-group label {
-    margin-bottom: 6px;
+  .back-btn,
+  .next-btn,
+  .complete-btn {
+    padding: 12px 20px;
+    font-size: 14px;
   }
 }
 
@@ -794,8 +862,46 @@
     width: 98%;
   }
 
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
   .modal-content {
     padding: 8px 12px;
+  }
+
+  .step-content h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .step-content p {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .chat-info-form {
+    margin-bottom: 8px;
+  }
+
+  .form-group {
+    margin-bottom: 8px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .form-textarea {
+    min-height: 40px;
+    max-height: 60px;
   }
 
   .upload-placeholder,
@@ -808,6 +914,17 @@
     width: 70px;
     height: 70px;
     font-size: 10px;
+  }
+
+  .modal-footer {
+    padding: 12px 16px;
+  }
+
+  .back-btn,
+  .next-btn,
+  .complete-btn {
+    padding: 10px 16px;
+    font-size: 13px;
   }
 }
 

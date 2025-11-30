@@ -344,8 +344,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Поле ввода */}
-        <InputField onSendMessage={handleSendMessage} />
+        {/* Поле ввода - показываем только после завершения настройки */}
+        {isSetupComplete && <InputField onSendMessage={handleSendMessage} />}
       </div>
     </>
   );
