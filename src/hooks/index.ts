@@ -9,6 +9,7 @@ export { useSendMessage, useMessageStatus } from "./useSendMessage";
 export { useSignUp } from "./useSignUp";
 export { useSignIn } from "./useSignIn";
 export { useLogout } from "./useLogout";
+export { useChatStatus, statusMessages } from "./useChatStatus";
 export type { ChatData } from "./useChats";
 export type { Message, ChatWithMessages, UIMessage } from "./useChatMessages";
 export type { MessageStatus } from "./useSendMessage";

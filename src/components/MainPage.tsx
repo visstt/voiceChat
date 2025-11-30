@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import ChatInterface from "./ChatInterface";
 import { HiChat } from "react-icons/hi";
-import { useCreateChat, useChats, useDeleteChat } from "../hooks";
+import {
+  useCreateChat,
+  useChats,
+  useDeleteChat,
+  useChatStatus,
+} from "../hooks";
 
 import "./MainPage.css";
 
@@ -12,6 +17,7 @@ interface Chat {
   lastMessage?: string;
   timestamp: Date;
   isSetupComplete?: boolean;
+  isProcessing?: boolean;
 }
 
 interface MainPageProps {
@@ -31,6 +37,8 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
 
   // Локальные новые чаты (которые еще не сохранены на сервере)
   const [localChats, setLocalChats] = useState<Chat[]>([]);
+  const [processingChatId, setProcessingChatId] = useState<number | null>(null);
+  const { startPolling } = useChatStatus(processingChatId);
 
   // Объединяем чаты с сервера и локальные новые чаты
   const allChats = [
@@ -41,6 +49,7 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
       lastMessage: chat.description || undefined,
       timestamp: new Date(chat.updatedAt),
       isSetupComplete: true,
+      isProcessing: chat.id === processingChatId,
     })),
   ];
 
@@ -98,6 +107,20 @@ const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
 
         // Обновляем активный чат на новый ID
         setActiveChat(chatData.id.toString());
+
+        // Если статус processing, запускаем поллинг
+        if (chatData.status === "processing") {
+          setProcessingChatId(chatData.id);
+          startPolling((status) => {
+            console.log("📊 Статус чата обновлен:", status);
+            if (status.status === "completed") {
+              setProcessingChatId(null);
+            } else if (status.status === "error") {
+              setProcessingChatId(null);
+              console.error("❌ Ошибка при обработке чата");
+            }
+          });
+        }
       }
     } catch (error) {
       console.error("Ошибка при создании чата:", error);

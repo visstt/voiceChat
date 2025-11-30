@@ -175,6 +175,43 @@
   color: #9ca3af;
 }
 
+/* Сообщение об обработке чата */
+.processing-message {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 16px;
+  padding: 48px 32px;
+  margin: 20px;
+}
+
+.processing-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.processing-message p {
+  color: #1e40af;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.processing-message span {
+  color: #3b82f6;
+  font-size: 1rem;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .chat-interface {

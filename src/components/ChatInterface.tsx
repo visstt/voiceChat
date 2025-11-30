@@ -17,6 +17,7 @@ interface ChatInterfaceProps {
     lastMessage?: string;
     timestamp: Date;
     isSetupComplete?: boolean;
+    isProcessing?: boolean;
   };
   onSetupComplete?: (
     chatId: string,
@@ -136,7 +137,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     }
   };
 
-  const [errorNotification, setErrorNotification] = useState<string | null>(null);
+  const [errorNotification, setErrorNotification] = useState<string | null>(
+    null
+  );
 
   const handleSendMessage = async (content: string, type: "text" | "voice") => {
     console.log("💬 [handleSendMessage] Начало отправки сообщения:", {
@@ -259,9 +262,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       );
 
       // Получаем текст ошибки
-      const errorText = error instanceof Error 
-        ? error.message 
-        : "Произошла ошибка при отправке сообщения";
+      const errorText =
+        error instanceof Error
+          ? error.message
+          : "Произошла ошибка при отправке сообщения";
 
       // Показываем уведомление об ошибке в UI
       setErrorNotification(errorText);
@@ -281,9 +285,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <div className="chat-interface">
         {/* Уведомление об ошибке */}
         {errorNotification && (
-          <div className="error-notification">
-            {errorNotification}
-          </div>
+          <div className="error-notification">{errorNotification}</div>
         )}
 
         {/* Заголовок чата */}
@@ -318,7 +320,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
         {/* Область сообщений */}
         <div className="messages-container" ref={messagesContainerRef}>
-          {messagesLoading ? (
+          {chat?.isProcessing ? (
+            <div className="empty-messages processing-message">
+              <div className="processing-icon">⏳</div>
+              <p>Чат обрабатывается...</p>
+              <span>Идет клонирование голоса, пожалуйста подождите</span>
+            </div>
+          ) : messagesLoading ? (
             <div className="empty-messages">
               <p>Загрузка сообщений...</p>
             </div>
@@ -344,8 +352,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Поле ввода - показываем только после завершения настройки */}
-        {isSetupComplete && <InputField onSendMessage={handleSendMessage} />}
+        {/* Поле ввода - показываем только после завершения настройки и если не в процессе обработки */}
+        {isSetupComplete && !chat?.isProcessing && (
+          <InputField onSendMessage={handleSendMessage} />
+        )}
       </div>
     </>
   );
