@@ -25,6 +25,30 @@ interface MainPageProps {
 }
 
 const MainPage: React.FC<MainPageProps> = ({ onLogout }) => {
+  // Запускать поллинг при открытии чата, если статус processing
+  React.useEffect(() => {
+    if (!activeChat) return;
+    const chat = allChats.find((c) => c.id === activeChat);
+    // Проверяем, что это серверный чат и статус processing
+    if (chat && chat.isProcessing) {
+      startPolling((status) => {
+        console.log("📊 Статус чата обновлен:", status);
+        if (status.status === "completed") {
+          setProcessingChatId(null);
+          updateChat(status.id, {
+            status: status.status,
+            voiceId: status.voiceId,
+          });
+        } else if (status.status === "error") {
+          setProcessingChatId(null);
+          updateChat(status.id, {
+            status: status.status,
+          });
+          console.error("❌ Ошибка при обработке чата");
+        }
+      });
+    }
+  }, [activeChat, allChats, startPolling, updateChat]);
   const { createChat } = useCreateChat();
   const {
     chats: serverChats,
