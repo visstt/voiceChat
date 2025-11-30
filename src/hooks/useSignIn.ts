@@ -2,19 +2,19 @@ import { useState } from "react";
 import apiClient from "../api/apiClient";
 import { AxiosError } from "axios";
 
-interface SignInData {
-  login: string;
-  password: string;
-}
-
 interface SignInResponse {
   message?: string;
   user?: Record<string, unknown>;
+  token?: string;
 }
 
 interface ErrorResponse {
   message?: string;
   error?: string;
+}
+interface SignInData {
+  login: string;
+  password: string;
 }
 
 export const useSignIn = () => {
@@ -35,6 +35,10 @@ export const useSignIn = () => {
 
       console.log("✅ [useSignIn] Авторизация успешна:", response.data);
 
+      // Сохраняем токен если есть
+      if (response.data.token) {
+        localStorage.setItem("auth_token", response.data.token);
+      }
       setSuccess(true);
       return true;
     } catch (err: unknown) {
